@@ -2,6 +2,7 @@
 
 #define byte uint8_t
 #define uint unsigned int
+#define MOD(a, b) (((a % b) + b) % b)
 
 #define MAGIC
 #ifdef MAGIC
@@ -66,13 +67,11 @@ static void otpArray(byte* array, uint n, byte* key) {
 }
 
 void rotateArray(byte* array, uint n, int amount) {
-    bool right = amount > 0;
-    amount *= right ? 1 : -1;
-    amount %= n;
-
-    for (int i = 0; i < amount; i++) {
-        // todo
-    }
+    byte* tmp = malloc(n);
+    for (int i = 0; i < n; i++)
+        tmp[MOD(amount + i, n)] = array[i];
+    memcpy(array, tmp, n);
+    free(tmp);
 }
 
 void blockSpike(byte* block) {

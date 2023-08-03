@@ -6,27 +6,16 @@
 
 int main(void) {
     printf("Hello World!\n");
-    // generate 64 bytes of random data for testing
-    int n = 64;
-    uint8_t data[n];
-    for (int i = 0; i < n; i++) {
-        data[i] = rand() % 256;
-    }
-
-    // print the data
-    printf("Data: ");
-    for (int i = 0; i < n; i++) {
-        printf("%02x ", data[i]);
-    }
-    printf("\n");
-
-    blockSpike(data);
-
-    // print the data
-    printf("Data: ");
-    for (int i = 0; i < n; i++) {
-        printf("%02x ", data[i]);
-    }
+    unsigned char data[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    printf("data: ");
+    for (int i = 0; i < 10; i++)
+        printf("%d ", data[i]);
+    int a = 11;
+    printf("\nRotating data %d times...\n", a);
+    rotateArray(data, 10, a);
+    printf("data: ");
+    for (int i = 0; i < 10; i++)
+        printf("%d ", data[i]);
     printf("\n");
     return 0;
 }
