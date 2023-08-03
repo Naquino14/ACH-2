@@ -23,6 +23,10 @@
 
 #define ACH_2_BLOCK_SIZE 64
 
+#ifdef __cplusplus
+extern "C" {
+#endif  // __cplusplus
+
 /// @brief Restore the dynamic seeds
 /// @details Should you not need to hash seprate data back-to-back,
 /// you can call this function to restore the dynamic seeds.
@@ -57,3 +61,7 @@ int GSC(uint8_t* block, int ci);
 #endif  // DEBUG
 
 #endif  // !ACH2_H
+
+#ifdef __cplusplus
+}
+#endif  // __cplusplus
