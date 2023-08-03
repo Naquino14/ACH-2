@@ -5,17 +5,13 @@
 #include "ACH-2.h"
 
 int main(void) {
-    printf("Hello World!\n");
-    unsigned char data[10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-    printf("data: ");
-    for (int i = 0; i < 10; i++)
-        printf("%d ", data[i]);
-    int a = 11;
-    printf("\nRotating data %d times...\n", a);
-    rotateArray(data, 10, a);
-    printf("data: ");
-    for (int i = 0; i < 10; i++)
-        printf("%d ", data[i]);
-    printf("\n");
+    unsigned char data[64];
+    for (int i = 0; i < 64; i++)
+        data[i] = rand() % 255;
+    data[4] = 63;
+    for (int i = 0; i < 1025; i++) {
+        int seed = GSC(data, i);
+        printf("%d\n", seed);
+    }
     return 0;
 }

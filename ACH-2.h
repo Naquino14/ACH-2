@@ -53,7 +53,7 @@ uint8_t* M1(uint8_t* a, unsigned int n, uint8_t* b, uint8_t* c, int sc);
 uint8_t* M2(uint8_t* a, unsigned int n, uint8_t* b, uint8_t* c, int sc);
 uint8_t* RM1(uint8_t* a, unsigned int n, int sc);
 uint8_t* RM2(uint8_t* a, unsigned int n, int sc);
-int GSC(uint8_t* block, unsigned int n, int ci);
+int GSC(uint8_t* block, int ci);
 #endif  // DEBUG
 
 #endif  // !ACH2_H

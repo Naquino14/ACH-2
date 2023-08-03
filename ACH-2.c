@@ -3,6 +3,7 @@
 #define byte uint8_t
 #define uint unsigned int
 #define MOD(a, b) (((a % b) + b) % b)
+#define ABS(a) (a > 0 ? a : -a)
 
 #define MAGIC
 #ifdef MAGIC
@@ -37,10 +38,9 @@ static byte RMC2C3 = 0x50;
 /// RM2 Seed Constant Minimum
 #define RM2_SC_MIN 12
 
-/// GSC Computation Iteration seed Minimum
-#define GSC_CI_MIN 13
-/// GSC Computation Iteration seed Limit
-#define GSC_CI_LIM 47
+/// GSC Power Limit
+#define GSC_POWN_LIM 1732
+#define GSC_SC_LIM 4646351
 /// GSC Term 1 sample index
 #define GSC_T1_SAM 21
 /// GSC Term 2 sample index
@@ -158,22 +158,26 @@ byte* RM2(byte* a, uint n, int sc) {
 }
 
 int GSC(byte* block, int ci) {  // todo: this needs to be completely rewritten
-    ci == 0 ? GSC_CI_MIN : ci;
-    ci %= GSC_CI_LIM;
-    float t1 = sin(block[GSC_T1_SAM] * ci / 20);
-    float t2 = cos(pow(ci, block[GSC_T2_SAM] / 10));
-    float t3 = block[GSC_T3_SAM] * (ci + 1) / 100;
-    t2 = pow(t2, t3);
-    float val = t1 * t2;
+    ci += 1;
+    float t1 = sin((float)(block[GSC_T1_SAM] * (ci + 1)) / 20);
+    int pown = (float)block[GSC_T2_SAM] / 10;
+    for (int i = pown, pown = ci; i > 0; i--) {
+        pown *= ci;
+        pown %= GSC_POWN_LIM;
+    }
+    float t2 = cos(pown);
+    float t3 = (float)(block[GSC_T3_SAM] * (ci + 1)) / 100;
+    float val = t1 * t2 * t3;
     byte valb[4];
     memcpy(valb, &val, 4);
     valb[1] = valb[1] << 1 | valb[1] >> 7;
     byte tmp = valb[0];
     valb[0] = valb[1];
     valb[1] = tmp;
+    valb[0] = valb[3] << ci % 8 | valb[1] >> 8 - ci % 8;
     int o;
     memcpy(&o, valb, 4);
-    return o;
+    return MOD(o, GSC_SC_LIM);
 }
 
 static byte* ach2(const byte* data, uint n) {
