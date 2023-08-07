@@ -98,13 +98,13 @@ void restoreDynamicSeeds() {
 }
 
 static void otpArray(byte* array, uint n, byte* key) {
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         array[i] ^= key[i];
 }
 
 void rotateArray(byte* array, uint n, int amount) {
     byte* tmp = malloc(n);
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         tmp[MOD(amount + i, n)] = array[i];
     memcpy(array, tmp, n);
     free(tmp);
@@ -128,14 +128,14 @@ void blockJump(byte* block) {
 
 byte* M1(byte* a, uint n, byte* b, byte* c, int sc) {
     byte* o = malloc(n);
-    for (int i = 0; i < n; i++)  // todo: analyze and simplify with boolean algebra
-        o[i] = a[i] ^ (b[i] * sc % 256) & (~a[i] ^ c[i]) ^ ~(b[i] ^ c[i]);
+    for (uint i = 0; i < n; i++)  // todo: analyze and simplify with boolean algebra
+        o[i] = ((a[i] ^ (b[i] * sc % 256)) & (~a[i] ^ c[i])) ^ ~(b[i] ^ c[i]);
     return o;
 }
 
 byte* M2(byte* a, uint n, byte* b, byte* c, int sc) {
     byte* o = malloc(n);
-    for (int i = 0; i < n; i++)  // todo: analyze and simplify with boolean algebra
+    for (uint i = 0; i < n; i++)  // todo: analyze and simplify with boolean algebra
         o[i] = ~((~a[i] & b[i]) ^ (a[i] & c[i]) ^ (~(b[i] & (c[i] * sc % 255)))) ^ (a[i] ^ b[i]) ^ (b[i] ^ c[i]);
     return o;
 }
@@ -149,7 +149,7 @@ byte* RM1(byte* a, uint n, int sc) {
     byte* t1 = malloc(n);
     byte* t2 = malloc(n);
     byte* t3 = malloc(n);
-    for (int i = 0; i < n; i++) {
+    for (uint i = 0; i < n; i++) {
         t1[i] = a[i];
         t2[i] = a[i];
         t3[i] = a[i];
@@ -158,7 +158,7 @@ byte* RM1(byte* a, uint n, int sc) {
     rotateArray(t2, n, RMC1C2);
     rotateArray(t3, n, -RMC1C3);
 
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         o[i] = t1[i] ^ t2[i] ^ t3[i];
 
     free(t1);
@@ -176,7 +176,7 @@ byte* RM2(byte* a, uint n, int sc) {
     byte* t1 = malloc(n);
     byte* t2 = malloc(n);
     byte* t3 = malloc(n);
-    for (int i = 0; i < n; i++) {
+    for (uint i = 0; i < n; i++) {
         t1[i] = a[i];
         t2[i] = a[i];
         t3[i] = a[i];
@@ -185,7 +185,7 @@ byte* RM2(byte* a, uint n, int sc) {
     rotateArray(a, n, -RMC2C2);
     rotateArray(a, n, RMC2C3);
 
-    for (int i = 0; i < n; i++)
+    for (uint i = 0; i < n; i++)
         o[i] = t1[i] ^ t2[i] ^ t3[i];
 
     free(t1);
@@ -211,7 +211,7 @@ int GSC(byte* block, int ci) {  // todo: this needs to be completely rewritten
     byte tmp = valb[0];
     valb[0] = valb[1];
     valb[1] = tmp;
-    valb[0] = valb[3] << ci % 8 | valb[1] >> 8 - ci % 8;
+    valb[0] = valb[3] << ci % 8 | valb[1] >> (8 - ci) % 8;
     int o;
     memcpy(&o, valb, 4);
     return MOD(o, GSC_SC_LIM);
