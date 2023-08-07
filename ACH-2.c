@@ -240,10 +240,10 @@ static byte* ach2(const byte* data, uint n) {
         printf("Iteration %d\n", ci);
 #endif
         // read up to 32 bytes of data, or until the end
-        memcpy(block, data + GRI(ci), MIN(ACH_2_BLOCK_SIZE, n - GRI(ci)));
+        memcpy(block, data + GRI(ci), MIN(ACH_2_BLOCK_MAIN, n - GRI(ci)));
         // pad if needed, and set the flag to false bc its the last round
-        if (n - GRI(ci) < ACH_2_BLOCK_SIZE) {
-            memset(block + n - GRI(ci), BLOCK_PAD, ACH_2_BLOCK_SIZE - (n - GRI(ci)));
+        if (n - GRI(ci) < ACH_2_BLOCK_MAIN) {
+            memset(block + n - GRI(ci), BLOCK_PAD, ACH_2_BLOCK_MAIN - (n - GRI(ci)));
             cf = false;
         }
 
@@ -256,7 +256,7 @@ static byte* ach2(const byte* data, uint n) {
 
         // generate ciphered bytes key
         // xor with seed, and rotate 16 times
-        byte* key = malloc(ACH_2_BLOCK_SIZE);  // FREE ME
+        byte* key = malloc(ACH_2_BLOCK_MAIN);  // FREE ME
         for (int i = 0; i < ACH_2_BLOCK_MAIN; i++)
             key[i] = block[i] ^ dynamicSeed;
         rotateArray(key, ACH_2_BLOCK_MAIN, 16);
@@ -335,6 +335,7 @@ static byte* ach2(const byte* data, uint n) {
         free(m2o);
         free(rm1o);
         free(rm2o);
+        ci++;
     }
 #ifdef DEBUG
     printf("Done hashing.\n");
