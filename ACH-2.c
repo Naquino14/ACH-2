@@ -361,3 +361,4 @@ byte* computeHash(const byte* data, uint n) {
 #undef byte
 #undef uint
 #undef MAGIC
+#undef HELPER
