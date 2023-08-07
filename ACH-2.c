@@ -223,9 +223,11 @@ void AddMod8(byte* o, uint n, byte* a, byte* b) {
 }
 
 static byte* ach2(const byte* data, uint n) {
-    // alloc hash
-    byte* block = malloc(ACH_2_BLOCK_SIZE);      // FREE ME
-    byte* prevBlock = malloc(ACH_2_BLOCK_SIZE);  // DONT FREE ME!!
+    // alloc hash, using calloc here bc not initializing it causes problems??
+    // hashing the same thing 4 times yields different results for the
+    // first two blocks, with the last 2 being alternating patterns of the first 2
+    byte* block = calloc(ACH_2_BLOCK_SIZE, sizeof(byte));  //
+    byte* prevBlock = malloc(ACH_2_BLOCK_SIZE);            // DONT FREE ME!!
     // compute flag
     bool cf = true;
     // computation iteration
@@ -236,9 +238,6 @@ static byte* ach2(const byte* data, uint n) {
         subblocks[i] = malloc(ACH_2_SUBBLOCK_SIZE);  // FREE ME
 
     while (cf) {
-#ifdef DEBUG
-        printf("Iteration %d\n", ci);
-#endif
         // read up to 32 bytes of data, or until the end
         memcpy(block, data + GRI(ci), MIN(ACH_2_BLOCK_MAIN, n - GRI(ci)));
         // pad if needed, and set the flag to false bc its the last round
@@ -249,10 +248,6 @@ static byte* ach2(const byte* data, uint n) {
 
         // generate dynamic seed
         dynamicSeed = GSC(block, ci);
-
-#ifdef DEBUG
-        printf("Dynamic seed: %d\n", dynamicSeed);
-#endif
 
         // generate ciphered bytes key
         // xor with seed, and rotate 16 times

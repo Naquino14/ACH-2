@@ -22,6 +22,7 @@ int main(void) {
             printf("%02x", (unsigned char)hash[i]);
         printf("\n");
         printf("Time: %d milliseconds\n", msec);
+        free(hash);
     }
     return 0;
 }
