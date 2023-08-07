@@ -22,6 +22,8 @@
 #endif  // !_STRING_H
 
 #define ACH_2_BLOCK_SIZE 64
+#define ACH_2_BLOCK_MAIN 32
+#define ACH_2_SUBBLOCK_SIZE 8
 
 #ifdef __cplusplus
 extern "C" {
